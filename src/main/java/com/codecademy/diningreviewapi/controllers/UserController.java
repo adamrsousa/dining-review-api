@@ -2,9 +2,9 @@ package com.codecademy.diningreviewapi.controllers;
 
 import com.codecademy.diningreviewapi.models.User;
 import com.codecademy.diningreviewapi.repositories.UserRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +19,13 @@ public class UserController {
 
     @PostMapping("/")
     public User create(@RequestBody User user) {
+        List<User> userList = (List<User>) userRepo.findAll();
+            for (int i=0; i<userList.size(); i++) {
+                Boolean condition = user.getName().equals(userList.get(i).getName());
+                if(condition){
+                    return null;
+                }
+            }
         User newUser = userRepo.save(user);
         return newUser;
     }
@@ -31,7 +38,6 @@ public class UserController {
         }
         User userToUpdate = updateUser.get();
 
-        userToUpdate.setName(user.getName());
         userToUpdate.setCity(user.getCity());
         userToUpdate.setState(user.getState());
         userToUpdate.setZipCode(user.getZipCode());
@@ -39,7 +45,7 @@ public class UserController {
         userToUpdate.setInterestedInEggAllergy(user.getInterestedInEggAllergy());
         userToUpdate.setInterestedInPeanutAllergy(user.getInterestedInPeanutAllergy());
 
-        return user;
+        return userToUpdate;
     }
 
     @GetMapping("/{name}")
