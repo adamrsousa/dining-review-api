@@ -1,9 +1,11 @@
 package com.codecademy.diningreviewapi.controllers;
 
 import com.codecademy.diningreviewapi.models.Restaurant;
+import com.codecademy.diningreviewapi.repositories.DiningReviewRepository;
 import com.codecademy.diningreviewapi.repositories.RestaurantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +27,7 @@ public class RestaurantController {
             Boolean condition = restaurant.getZipCode().equals(restaurants.get(i).getZipCode())
                     &&restaurant.getName().equals(restaurants.get(i).getName());
             if(condition){
-                return null;
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Restaurant already exists");
             }
         }
 
@@ -38,16 +40,18 @@ public class RestaurantController {
     public Restaurant findById(@PathVariable Long id) {
         Optional<Restaurant> restaurant= restaurantRepo.findById(id);
         if(!restaurant.isPresent()) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Restaurant does not exist");
         }
         Restaurant idRest = restaurant.get();
         return idRest;
     }
 
     @GetMapping("/")
-    public List<Restaurant> findByZipCodeAndAllergy(@RequestBody String zipCode,
-                                                    @RequestBody String allergy) {
+    public List<Restaurant> findByZipCodeAndAllergy(@RequestBody String zipCode) {
 
+        List<Restaurant> findZip= restaurantRepo.findByZipCodeWithAllergy(zipCode);
+
+        return findZip;
     }
 
 }

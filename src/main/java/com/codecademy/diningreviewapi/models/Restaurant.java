@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -23,5 +24,9 @@ public class Restaurant {
 
     private String name;
     private String zipCode;
-
+    private Integer peanutScore;
+    private Integer eggScore;
+    private Integer dairyScore;
+    private String commentary;
+    private BigDecimal finalScore;
 }

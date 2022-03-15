@@ -24,8 +24,8 @@ public class User {
     private String city;
     private String state;
     private String zipCode;
-    private Boolean interestedInPeanutAllergy;
-    private Boolean interestedInEggAllergy;
-    private Boolean interestedInDairyAllergy;
+    private Boolean hasPeanutAllergy;
+    private Boolean hasEggAllergy;
+    private Boolean hasDairyAllergy;
 
 }

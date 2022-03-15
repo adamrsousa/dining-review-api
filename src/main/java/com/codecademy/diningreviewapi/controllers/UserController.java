@@ -2,7 +2,9 @@ package com.codecademy.diningreviewapi.controllers;
 
 import com.codecademy.diningreviewapi.models.User;
 import com.codecademy.diningreviewapi.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class UserController {
             for (int i=0; i<userList.size(); i++) {
                 Boolean condition = user.getName().equals(userList.get(i).getName());
                 if(condition){
-                    return null;
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username already exists");
                 }
             }
         User newUser = userRepo.save(user);
@@ -34,16 +36,16 @@ public class UserController {
     public User update(@PathVariable Long id, @RequestBody User user) {
         Optional<User> updateUser = userRepo.findById(id);
         if(!updateUser.isPresent()){
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This user does not exist");
         }
         User userToUpdate = updateUser.get();
 
         userToUpdate.setCity(user.getCity());
         userToUpdate.setState(user.getState());
         userToUpdate.setZipCode(user.getZipCode());
-        userToUpdate.setInterestedInDairyAllergy(user.getInterestedInDairyAllergy());
-        userToUpdate.setInterestedInEggAllergy(user.getInterestedInEggAllergy());
-        userToUpdate.setInterestedInPeanutAllergy(user.getInterestedInPeanutAllergy());
+        userToUpdate.setHasDairyAllergy(user.getHasDairyAllergy());
+        userToUpdate.setHasEggAllergy(user.getHasEggAllergy());
+        userToUpdate.setHasPeanutAllergy(user.getHasPeanutAllergy());
 
         return userToUpdate;
     }
@@ -53,7 +55,7 @@ public class UserController {
         Optional<User> username = userRepo.findByName(name);
 
         if(!username.isPresent()){
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This user does not exist");
         }
         User existentUser = username.get();
 

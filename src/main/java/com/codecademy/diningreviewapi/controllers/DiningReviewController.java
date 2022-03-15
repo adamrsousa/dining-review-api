@@ -5,7 +5,9 @@ import com.codecademy.diningreviewapi.models.DiningReview;
 import com.codecademy.diningreviewapi.models.Restaurant;
 import com.codecademy.diningreviewapi.repositories.DiningReviewRepository;
 import com.codecademy.diningreviewapi.repositories.RestaurantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,7 @@ public class DiningReviewController {
     public DiningReview create(@RequestBody DiningReview review) {
         Optional<Restaurant> rest = restaurantRepo.findById(review.getRestaurant().getId());
             if(!rest.isPresent()){
-                return null;
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This restaurant does not exist");
             }
         DiningReview newReview= diningRepo.save(review);
         return newReview;
@@ -44,7 +46,7 @@ public class DiningReviewController {
         Optional<DiningReview> change = diningRepo.findById(id);
 
         if(!change.isPresent()) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This review already exists");
         }
 
         DiningReview changeStatus = change.get();
@@ -57,12 +59,12 @@ public class DiningReviewController {
     public DiningReview findById(@PathVariable Long id) {
         Optional<DiningReview> diningReview= diningRepo.findById(id);
         if(!diningReview.isPresent()) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This review does not exist");
         }
 
         Optional<Restaurant> rest = restaurantRepo.findById(diningReview.get().getRestaurant().getId());
         if(!rest.isPresent()){
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This restaurant does not exist");
         }
 
         DiningReview idRev = diningReview.get();
